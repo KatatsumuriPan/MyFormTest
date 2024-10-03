@@ -1,0 +1,188 @@
+
+float __cdecl
+UpdatePressure(SimData *param_1,SimEvents *param_2,CellSOA *param_3,CellSOA *param_4,int param_5,
+              ushort param_6,schar param_7,float param_8,int param_9)
+
+{
+  float fVar1;
+  float fVar2;
+  uchar uVar3;
+  short *psVar4;
+  float *pfVar5;
+  int *piVar6;
+  uchar *puVar7;
+  float fVar8;
+  float fVar9;
+  ulonglong uVar10;
+  float *pfVar11;
+  int iVar12;
+  int cellIndex;
+  ulonglong uVar13;
+  ulonglong uVar14;
+  byte bVar15;
+  ushort uVar16;
+  ushort uVar17;
+  float fVar18;
+  float fVar19;
+  float fVar20;
+  float fVar21;
+  float local_res18 [2];
+  
+  uVar13 = (ulonglong)param_9;
+  psVar4 = (param_3->elementIdx).data;
+  if (uVar13 < (ulonglong)((longlong)(param_3->elementIdx).end - (longlong)psVar4 >> 1)) {
+    uVar17 = psVar4[uVar13];
+    uVar14 = (ulonglong)uVar17;
+    if (uVar14 < (ulonglong)
+                 ((longlong)(gElementPressureData._16_8_ - gElementPressureData._8_8_) >> 3)) {
+      pfVar5 = (param_3->mass).data;
+      uVar10 = (longlong)(param_3->mass).end - (longlong)pfVar5 >> 2;
+      bVar15 = *(byte *)(gElementPressureData._8_8_ + uVar14 * 8) & 3;
+      if (((ulonglong)(longlong)param_5 < uVar10) && (fVar18 = pfVar5[param_5], uVar13 < uVar10)) {
+        fVar21 = pfVar5[uVar13];
+        if (param_7 != '\x01') {
+          param_8 = *(float *)(gElementPressureData._8_8_ + 4 + uVar14 * 8);
+        }
+        fVar20 = param_8 * (fVar18 - fVar21);
+        if (fVar18 * 0.125 <= fVar20) {
+          fVar20 = fVar18 * 0.125;
+        }
+        if (fVar20 <= fVar21 * -0.125) {
+          fVar20 = fVar21 * -0.125;
+        }
+        uVar16 = param_6;
+        if (0.0 > fVar20) {
+          fVar18 = fVar21;
+          bVar15 = param_7;
+          uVar16 = uVar17;
+          uVar17 = param_6;
+        }
+        cellIndex = param_9;
+        if (0.0 <= fVar20) {
+          cellIndex = param_5;
+          param_5 = param_9;
+        }
+        fVar21 = (float)((uint)fVar20 & 0x7fffffff);
+        if (fVar18 < (float)((uint)fVar20 & 0x7fffffff)) {
+          fVar21 = fVar18;
+        }
+        piVar6 = (param_3->diseaseCount).data;
+        uVar13 = (ulonglong)cellIndex;
+        if (uVar13 < (ulonglong)((longlong)(param_3->diseaseCount).end - (longlong)piVar6 >> 2)) {
+          puVar7 = (param_4->diseaseIdx).data;
+          fVar18 = fVar21 / fVar18;
+          if (1.0 <= fVar18) {
+            fVar18 = 1.0;
+          }
+          if (fVar18 <= 0.0) {
+            fVar18 = 0.0;
+          }
+          iVar12 = (int)(fVar18 * (float)piVar6[uVar13]);
+          if (uVar13 < (ulonglong)((longlong)(param_4->diseaseIdx).end - (longlong)puVar7)) {
+            uVar3 = puVar7[uVar13];
+            pfVar5 = (param_4->temperature).data;
+            if (uVar13 < (ulonglong)((longlong)(param_4->temperature).end - (longlong)pfVar5 >> 2))
+            {
+              fVar18 = pfVar5[uVar13];
+              pfVar5 = (param_4->mass).data;
+              uVar14 = (ulonglong)param_5;
+              if (uVar14 < (ulonglong)((longlong)(param_4->mass).end - (longlong)pfVar5 >> 2)) {
+                fVar1 = pfVar5[uVar14];
+                pfVar5 = (param_4->temperature).data;
+                fVar19 = fVar21 + fVar1;
+                uVar10 = (longlong)(param_4->temperature).end - (longlong)pfVar5 >> 2;
+                if (uVar14 < uVar10) {
+                  fVar2 = pfVar5[uVar14];
+                  fVar8 = fVar18;
+                  fVar9 = fVar2;
+                  if (fVar2 < fVar18) {
+                    fVar8 = fVar2;
+                    fVar9 = fVar18;
+                  }
+                  if ((uVar14 < uVar10) &&
+                     (pfVar5 = (param_4->mass).data,
+                     uVar14 < (ulonglong)((longlong)(param_4->mass).end - (longlong)pfVar5 >> 2))) {
+                    pfVar5[uVar14] = fVar19;
+                    pfVar5 = (param_4->temperature).data;
+                    if (uVar14 < (ulonglong)
+                                 ((longlong)(param_4->temperature).end - (longlong)pfVar5 >> 2)) {
+                      fVar19 = (fVar21 * fVar18 + fVar1 * fVar2) / fVar19;
+                      if (fVar9 <= fVar19) {
+                        fVar19 = fVar9;
+                      }
+                      if (fVar19 <= fVar8) {
+                        fVar19 = fVar8;
+                      }
+                      pfVar5[uVar14] = fVar19;
+                      Disease::AddDiseaseToCell((Disease *)gDisease,param_4,param_5,uVar3,iVar12);
+                      pfVar5 = (param_4->mass).data;
+                      uVar10 = (longlong)(param_4->mass).end - (longlong)pfVar5 >> 2;
+                      if (uVar13 < uVar10) {
+                        param_9 = 0;
+                        local_res18[0] = pfVar5[uVar13] - fVar21;
+                        pfVar11 = (float *)&param_9;
+                        if (0.0 < pfVar5[uVar13] - fVar21) {
+                          pfVar11 = local_res18;
+                        }
+                        if (uVar13 < uVar10) {
+                          pfVar5[uVar13] = *pfVar11;
+                          piVar6 = (param_4->diseaseCount).data;
+                          if (uVar13 < (ulonglong)
+                                       ((longlong)(param_4->diseaseCount).end - (longlong)piVar6 >>
+                                       2)) {
+                            piVar6 = piVar6 + uVar13;
+                            *piVar6 = *piVar6 - iVar12;
+                            piVar6 = (param_4->diseaseCount).data;
+                            if (uVar13 < (ulonglong)
+                                         ((longlong)(param_4->diseaseCount).end - (longlong)piVar6
+                                         >> 2)) {
+                              if (piVar6[uVar13] < 1) {
+                                CellSOA::ClearDisease(param_4,cellIndex);
+                              }
+                              if (bVar15 != 0) {
+                                return fVar20;
+                              }
+                              if (uVar17 == param_1->voidElementIdx) {
+                                pfVar5 = (param_4->mass).data;
+                                if (uVar14 < (ulonglong)
+                                             ((longlong)(param_4->mass).end - (longlong)pfVar5 >> 2)
+                                   ) {
+                                  pfVar5[uVar14] = 0.0;
+                                  pfVar5 = (param_4->temperature).data;
+                                  if (uVar14 < (ulonglong)
+                                               ((longlong)(param_4->temperature).end -
+                                                (longlong)pfVar5 >> 2)) {
+                                    pfVar5[uVar14] = 0.0;
+                                    CellSOA::ClearDisease(param_4,param_5);
+                                    return fVar20;
+                                  }
+                                }
+                              }
+                              else {
+                                psVar4 = (param_4->elementIdx).data;
+                                if (uVar14 < (ulonglong)
+                                             ((longlong)(param_4->elementIdx).end - (longlong)psVar4
+                                             >> 1)) {
+                                  psVar4[uVar14] = uVar16;
+                                  SimEvents::ChangeSubstance(param_2,param_1,uVar14);
+                                  return fVar20;
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
+
