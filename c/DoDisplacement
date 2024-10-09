@@ -1,0 +1,78 @@
+
+void __cdecl
+DoDisplacement(SimData *param_1,SimEvents *param_2,CellSOA *param_3,int param_4,int param_5)
+
+{
+  int *piVar1;
+  uchar *puVar2;
+  float *pfVar3;
+  float *pfVar4;
+  short *psVar5;
+  code *pcVar6;
+  ulonglong uVar7;
+  ulonglong cellIndex;
+  ulonglong cellIndex_00;
+  CellAccessor local_28;
+  
+  cellIndex = (ulonglong)param_4;
+  piVar1 = (param_3->diseaseCount).data;
+  local_28.cells = param_3;
+  local_28.cellIdx = param_4;
+  if ((((cellIndex < (ulonglong)((longlong)(param_3->diseaseCount).end - (longlong)piVar1 >> 2)) &&
+       (puVar2 = (param_3->diseaseIdx).data,
+       cellIndex < (ulonglong)((longlong)(param_3->diseaseIdx).end - (longlong)puVar2))) &&
+      (pfVar3 = (param_3->temperature).data,
+      cellIndex < (ulonglong)((longlong)(param_3->temperature).end - (longlong)pfVar3 >> 2))) &&
+     (pfVar4 = (param_3->mass).data,
+     cellIndex < (ulonglong)((longlong)(param_3->mass).end - (longlong)pfVar4 >> 2))) {
+    cellIndex_00 = (ulonglong)param_5;
+    AddMassAndUpdateTemperature
+              (param_3,param_3,param_5,pfVar4[cellIndex],pfVar3[cellIndex],puVar2[cellIndex],
+               piVar1[cellIndex]);
+    psVar5 = (param_3->elementIdx).data;
+    uVar7 = (longlong)(param_3->elementIdx).end - (longlong)psVar5 >> 1;
+    if ((cellIndex < uVar7) && (cellIndex_00 < uVar7)) {
+      psVar5[cellIndex_00] = psVar5[cellIndex];
+      pfVar3 = (param_3->mass).data;
+      if (cellIndex_00 < (ulonglong)((longlong)(param_3->mass).end - (longlong)pfVar3 >> 2)) {
+        if (pfVar3[cellIndex_00] != 0.0) {
+          pfVar3 = (param_3->temperature).data;
+          if ((ulonglong)((longlong)(param_3->temperature).end - (longlong)pfVar3 >> 2) <=
+              cellIndex_00) goto LAB_180037248;
+          if (pfVar3[cellIndex_00] <= 0.0) {
+            KCrashReporterReportMessage
+                      ("c:\\jenkins\\workspace\\build\\simdll\\game\\simdll\\simlib\\simutil.cpp",
+                       0x3e,
+                       "Assert failed: dest_cell.mass() == 0.0f || dest_cell.temperature() > 0.0f");
+            if (gAssertsDisabled == false) {
+              pcVar6 = (code *)swi(3);
+              (*pcVar6)();
+              return;
+            }
+          }
+        }
+        psVar5 = (param_3->elementIdx).data;
+        if (cellIndex < (ulonglong)((longlong)(param_3->elementIdx).end - (longlong)psVar5 >> 1)) {
+          psVar5[cellIndex] = param_1->vacuumElementIdx;
+          pfVar3 = (param_3->mass).data;
+          if (cellIndex < (ulonglong)((longlong)(param_3->mass).end - (longlong)pfVar3 >> 2)) {
+            pfVar3[cellIndex] = 0.0;
+            pfVar3 = (param_3->temperature).data;
+            if (cellIndex <
+                (ulonglong)((longlong)(param_3->temperature).end - (longlong)pfVar3 >> 2)) {
+              pfVar3[cellIndex] = 0.0;
+              CellAccessor::ClearDisease(&local_28);
+              SimEvents::ChangeSubstance(param_2,param_1,cellIndex);
+              SimEvents::ChangeSubstance(param_2,param_1,cellIndex_00);
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+LAB_180037248:
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
+
