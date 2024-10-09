@@ -1,0 +1,33 @@
+
+void __thiscall CellSOA::ClearDisease(CellSOA *this,int cellIndex)
+
+{
+  ulonglong index;
+  int *deseaseCount;
+  float *diseaseGrowthAccumulatedError;
+  uchar *diseaseIdx;
+  
+  index = (ulonglong)cellIndex;
+  diseaseIdx = (this->diseaseIdx).data;
+  if (index < (ulonglong)((longlong)(this->diseaseIdx).end - (longlong)diseaseIdx)) {
+    diseaseIdx[index] = 0xff;
+    deseaseCount = (this->diseaseCount).data;
+    if (index < (ulonglong)((longlong)(this->diseaseCount).end - (longlong)deseaseCount >> 2)) {
+      deseaseCount[index] = 0;
+      diseaseIdx = (this->diseaseInfestationTickCount).data;
+      if (index < (ulonglong)
+                  ((longlong)(this->diseaseInfestationTickCount).end - (longlong)diseaseIdx)) {
+        diseaseIdx[index] = '\0';
+        diseaseGrowthAccumulatedError = (this->diseaseGrowthAccumulatedError).data;
+        if (index < (ulonglong)
+                    ((longlong)(this->diseaseGrowthAccumulatedError).end -
+                     (longlong)diseaseGrowthAccumulatedError >> 2)) {
+          diseaseGrowthAccumulatedError[index] = 0.0;
+          return;
+        }
+      }
+    }
+  }
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
