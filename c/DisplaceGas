@@ -1,0 +1,110 @@
+
+/* ガスの押出判定
+   まずは隣接4マス（上左右下）に対して同一元素or真空ならそこへ押し出す
+   それがダメなら斜め上2マス（左上右上）に対して同一元素かつ自分の隣が固体でなければそこへ押し出す（真空はダメ）
+   再現性を下げるためにスタートするインデックスをtickのmodでズラしてる（順は変わらないので偏りはある）
+    */
+
+bool __cdecl
+DisplaceGas(SimData *simData,SimEvents *simEvents,CellSOA *cells,int baseSellIndex,
+           ushort cellElementIdx)
+
+{
+  undefined extraout_AL;
+  uint i;
+  int targetPos;
+  ulonglong targetPosUL;
+  int upPos;
+  ulonglong elementIdxSize;
+  ulonglong LorRElement;
+  uint j;
+  undefined auStackY_a8 [32];
+  int upSidePos [2];
+  SimEvents *simEvents$1;
+  int ulrdPos [4];
+  ulonglong local_50;
+  short *elementIdx;
+  short *elementIdx$1;
+  float *mass;
+  uchar *properties;
+  CellSOA *updateCells;
+  
+  local_50 = __security_cookie ^ (ulonglong)auStackY_a8;
+  LorRElement = (ulonglong)baseSellIndex;
+  simEvents$1 = simEvents;
+  mass = (cells->mass).data;
+  if ((ulonglong)((longlong)(cells->mass).end - (longlong)mass >> 2) <= LorRElement) {
+LAB_1800369a8:
+                    /* WARNING: Subroutine does not return */
+    _invalid_parameter_noinfo_noreturn();
+  }
+  if (0.0 < mass[LorRElement]) {
+    elementIdx = (cells->elementIdx).data;
+    elementIdxSize = (longlong)(cells->elementIdx).end - (longlong)elementIdx >> 1;
+    if ((elementIdxSize <= LorRElement) ||
+       ((ulonglong)
+        ((longlong)(gElementPostProcessData._16_8_ - gElementPostProcessData._8_8_) / 0x2c) <=
+        (ulonglong)(ushort)elementIdx[LorRElement])) goto LAB_1800369a8;
+    if ((*(byte *)((ulonglong)(ushort)elementIdx[LorRElement] * 0x2c + 4 +
+                  gElementPostProcessData._8_8_) & 3) == 1) {
+      ulrdPos[1] = baseSellIndex + -1;
+      ulrdPos[2] = baseSellIndex + 1;
+      upPos = simData->width + baseSellIndex;
+      ulrdPos[3] = baseSellIndex - simData->width;
+      j = 0;
+      ulrdPos[0] = upPos;
+      i = 0;
+      do {
+        targetPos = ulrdPos[i + simData->tickCount & 3];
+        targetPosUL = (ulonglong)targetPos;
+        if (elementIdxSize <= targetPosUL) goto LAB_1800369a8;
+        if (elementIdx[targetPosUL] == cellElementIdx) {
+LAB_180036873:
+          properties = (cells->properties).data;
+          if ((ulonglong)((longlong)(cells->properties).end - (longlong)properties) <= targetPosUL)
+          goto LAB_1800369a8;
+          if ((properties[targetPosUL] & 1) == 0) goto LAB_18003698b;
+        }
+        else {
+          if (elementIdxSize <= targetPosUL) goto LAB_1800369a8;
+          if (elementIdx[targetPosUL] == simData->vacuumElementIdx) goto LAB_180036873;
+        }
+        i = i + 1;
+      } while (i < 4);
+      ulrdPos[0] = baseSellIndex + -1;
+      upSidePos[0] = upPos + -1;
+      ulrdPos[1] = baseSellIndex + 1;
+      upSidePos[1] = upPos + 1;
+      do {
+        i = j + simData->tickCount & 1;
+        targetPos = upSidePos[i];
+        targetPosUL = (ulonglong)targetPos;
+        if (elementIdxSize <= targetPosUL) goto LAB_1800369a8;
+        if (elementIdx[targetPosUL] == cellElementIdx) {
+          updateCells = (simData->updatedCells).pointer;
+          elementIdx$1 = (updateCells->elementIdx).data;
+          if (((ulonglong)((longlong)(updateCells->elementIdx).end - (longlong)elementIdx$1 >> 1) <=
+               (ulonglong)(longlong)ulrdPos[i]) ||
+             (LorRElement = (ulonglong)(ushort)elementIdx$1[ulrdPos[i]],
+             (ulonglong)((longlong)(gElementLiquidData._16_8_ - gElementLiquidData._8_8_) / 0x18) <=
+             LorRElement)) goto LAB_1800369a8;
+          if ((*(byte *)(gElementLiquidData._8_8_ + LorRElement * 0x18) & 3) != 3) {
+                    /* SOLIDじゃなければ */
+            properties = (cells->properties).data;
+            if ((ulonglong)((longlong)(cells->properties).end - (longlong)properties) <= targetPosUL
+               ) goto LAB_1800369a8;
+            if ((properties[targetPosUL] & 1) == 0) goto LAB_18003698b;
+          }
+        }
+        j = j + 1;
+      } while (j < 2);
+    }
+  }
+  goto LAB_18003696d;
+LAB_18003698b:
+  DoDisplacement(simData,simEvents,cells,baseSellIndex,targetPos);
+LAB_18003696d:
+  __security_check_cookie(local_50 ^ (ulonglong)auStackY_a8);
+  return (bool)extraout_AL;
+}
+
