@@ -1,0 +1,1230 @@
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void __thiscall SimBase::UpdateData(SimBase *this,SimData *param_1)
+
+{
+  undefined *puVar1;
+  mutex *pmVar2;
+  ushort uVar3;
+  ushort uVar4;
+  int iVar5;
+  undefined8 uVar6;
+  ParallelTaskQueue *pPVar7;
+  CellSOA *pCVar8;
+  short *psVar9;
+  float *pfVar10;
+  int *piVar11;
+  ulong64 uVar12;
+  undefined auVar13 [16];
+  byte bVar14;
+  uchar uVar15;
+  int iVar16;
+  int iVar17;
+  int iVar18;
+  int iVar19;
+  void *pvVar20;
+  longlong lVar21;
+  float *pfVar22;
+  error_code *peVar23;
+  int iVar24;
+  ulonglong uVar25;
+  unique_ptr<> uVar26;
+  longlong lVar27;
+  longlong lVar28;
+  int iVar29;
+  int iVar30;
+  ulonglong uVar31;
+  Vector2<int> VVar32;
+  Vector2<int> VVar33;
+  Vector3<float> *pVVar34;
+  uchar *puVar35;
+  short *psVar36;
+  ulonglong uVar37;
+  longlong lVar38;
+  ushort *puVar39;
+  byte *pbVar40;
+  float fVar41;
+  float fVar42;
+  float fVar43;
+  int local_res10;
+  undefined local_218 [4];
+  float local_214;
+  uchar *local_210;
+  Region local_208;
+  uint local_1f8;
+  short *local_1f0;
+  longlong local_1e8;
+  short *local_1e0;
+  int local_1d8;
+  Vector2<int> local_1d0;
+  Vector2<int> local_1c8;
+  undefined local_1b8 [5];
+  undefined auStack_1b3 [3];
+  error_category *peStack_1b0;
+  byte local_1a8;
+  int local_198;
+  int local_194;
+  int local_190;
+  int local_18c;
+  int local_188;
+  int local_184;
+  longlong local_180;
+  undefined8 local_178;
+  float local_170;
+  Region *local_168;
+  vector<> *local_158;
+  error_category *peStack_150;
+  longlong local_148;
+  uchar *local_140;
+  longlong local_138;
+  longlong local_130;
+  Region *local_128;
+  mutex *local_120;
+  undefined local_118;
+  mutex *local_110;
+  undefined local_108;
+  Region local_100;
+  Vector2<int> local_f0;
+  undefined8 local_d8;
+  
+  local_d8 = 0xfffffffffffffffe;
+  iVar5 = param_1->width;
+  if (iVar5 != 0) {
+    noffset = -noffset;
+    local_198 = param_1->height;
+    CellSOA::CopyFrom((param_1->cells).pointer,(param_1->updatedCells).pointer);
+    local_168 = *(Region **)&(param_1->activeRegions).field_0x8;
+    local_128 = *(Region **)&(param_1->activeRegions).field_0x10;
+    if (local_168 != local_128) {
+      do {
+        local_208 = *local_168;
+        local_1d8 = local_208.minimum;
+        local_f0 = local_168[1].minimum;
+        local_100.minimum = local_208.minimum;
+        local_100.maximum = local_208.maximum;
+        fVar43 = local_208.minimum.y;
+        local_190 = local_208.maximum;
+        iVar16 = local_190 - local_1d8;
+        lVar21 = (longlong)
+                 (int)(*(longlong *)&(this->taskQueue->mWorkers).field_0x10 -
+                       *(longlong *)&(this->taskQueue->mWorkers).field_0x8 >> 4);
+        lVar38 = (longlong)(local_208.maximum.y - (int)fVar43);
+        uVar25 = lVar38 / lVar21;
+        uVar31 = lVar38 % lVar21;
+        local_1f8 = (uint)uVar31;
+        uVar31 = uVar31 & 0xffffffff;
+        local_214 = (float)uVar25;
+        uVar25 = uVar25 & 0xffffffff;
+        local_1d0 = local_100.minimum;
+        local_1c8 = local_100.maximum;
+        local_res10 = 0;
+        uVar37 = 0;
+        lVar21 = *(longlong *)&(this->temperatureTasks).field_0x10;
+        lVar38 = *(longlong *)&(this->temperatureTasks).field_0x8;
+        local_100 = local_208;
+        if (0 < (int)(lVar21 - lVar38 >> 3)) {
+          while( true ) {
+            local_218 = (undefined  [4])
+                        ((uint)(local_res10 < (int)uVar31) + (int)fVar43 + (int)uVar25);
+            local_1c8.y = (int)local_218;
+            if ((ulonglong)(lVar21 - lVar38 >> 3) <= uVar37) {
+                    /* WARNING: Subroutine does not return */
+              _invalid_parameter_noinfo_noreturn();
+            }
+            lVar21 = *(longlong *)(lVar38 + uVar37 * 8);
+            lVar38 = *(longlong *)&(this->simEvents).field_0x8;
+            if ((ulonglong)(*(longlong *)&(this->simEvents).field_0x10 - lVar38 >> 3) <= uVar37) {
+                    /* WARNING: Subroutine does not return */
+              _invalid_parameter_noinfo_noreturn();
+            }
+            uVar6 = *(undefined8 *)(lVar38 + uVar37 * 8);
+            *(SimData **)(lVar21 + 8) = param_1;
+            *(undefined8 *)(lVar21 + 0x10) = uVar6;
+            *(Vector2<int> *)(lVar21 + 0x18) = local_1d0;
+            *(Vector2<int> *)(lVar21 + 0x20) = local_1c8;
+            pPVar7 = this->taskQueue;
+            local_120 = &pPVar7->mMutex;
+            local_118 = 0;
+            iVar17 = _Mtx_lock((_Mtx_internal_imp_t *)local_120);
+            if (iVar17 != 0) {
+              std::_Throw_C_error(iVar17);
+            }
+            local_118 = 1;
+            lVar38 = *(longlong *)&(pPVar7->mTasks).c.field_0x20;
+            uVar25 = *(ulonglong *)&(pPVar7->mTasks).c.field_0x18;
+            if ((((int)lVar38 + (int)uVar25 & 1U) == 0) &&
+               (*(ulonglong *)&(pPVar7->mTasks).c.field_0x10 <= lVar38 + 2U >> 1)) {
+              std::deque<>::_Growmap(&(pPVar7->mTasks).c,1);
+              uVar25 = *(ulonglong *)&(pPVar7->mTasks).c.field_0x18;
+            }
+            uVar25 = *(longlong *)&(pPVar7->mTasks).c.field_0x10 * 2 - 1U & uVar25;
+            *(ulonglong *)&(pPVar7->mTasks).c.field_0x18 = uVar25;
+            uVar25 = *(longlong *)&(pPVar7->mTasks).c.field_0x20 + uVar25;
+            uVar31 = uVar25 >> 1 & *(longlong *)&(pPVar7->mTasks).c.field_0x10 - 1U;
+            lVar38 = *(longlong *)&(pPVar7->mTasks).c.field_0x8;
+            if (*(longlong *)(lVar38 + uVar31 * 8) == 0) {
+              pvVar20 = operator_new(0x10);
+              *(void **)(*(longlong *)&(pPVar7->mTasks).c.field_0x8 + uVar31 * 8) = pvVar20;
+              lVar38 = *(longlong *)&(pPVar7->mTasks).c.field_0x8;
+            }
+            *(longlong *)(*(longlong *)(lVar38 + uVar31 * 8) + (ulonglong)((uint)uVar25 & 1) * 8) =
+                 lVar21;
+            puVar1 = &(pPVar7->mTasks).c.field_0x20;
+            *(longlong *)puVar1 = *(longlong *)puVar1 + 1;
+            pPVar7->mTaskCount = pPVar7->mTaskCount + 1;
+            if (&pPVar7->mMutex == (mutex *)0x0) {
+              peVar23 = std::make_error_code((error_code *)&local_110,operation_not_permitted);
+              local_158._0_4_ = peVar23->_Myval;
+              local_158._4_4_ = *(undefined4 *)&peVar23->field_0x4;
+              peStack_150 = peVar23->_Mycat;
+              std::system_error::system_error((system_error *)&local_100,(error_code *)&local_158);
+                    /* WARNING: Subroutine does not return */
+              _CxxThrowException(&local_100,(ThrowInfo *)&_TI4?AVsystem_error@std@@);
+            }
+            iVar17 = _Mtx_unlock((_Mtx_internal_imp_t *)&pPVar7->mMutex);
+            if (iVar17 != 0) {
+              std::_Throw_C_error(iVar17);
+            }
+            local_118 = 0;
+            iVar17 = _Cnd_signal((_Cnd_internal_imp_t *)&pPVar7->mTaskCondition);
+            if (iVar17 != 0) {
+              std::_Throw_C_error(iVar17);
+            }
+            local_1d0.y = (int)local_218;
+            local_res10 = local_res10 + 1;
+            uVar37 = uVar37 + 1;
+            lVar21 = *(longlong *)&(this->temperatureTasks).field_0x10;
+            lVar38 = *(longlong *)&(this->temperatureTasks).field_0x8;
+            if ((int)(lVar21 - lVar38 >> 3) <= local_res10) break;
+            uVar25 = (ulonglong)(uint)local_214;
+            uVar31 = (ulonglong)local_1f8;
+            fVar43 = (float)local_218;
+          }
+        }
+        pPVar7 = this->taskQueue;
+        pmVar2 = &pPVar7->mMutex;
+        local_108 = 0;
+        local_110 = pmVar2;
+        iVar17 = _Mtx_lock((_Mtx_internal_imp_t *)pmVar2);
+        if (iVar17 != 0) {
+          std::_Throw_C_error(iVar17);
+        }
+        local_108 = 1;
+        uVar12 = pPVar7->mTaskCount;
+        while (uVar12 != 0) {
+                    /* WARNING: Read-only address (ram,0x00018009bd30) is written */
+          iVar17 = _Cnd_wait((_Cnd_internal_imp_t *)pPVar7,(_Mtx_internal_imp_t *)pmVar2);
+          if (iVar17 != 0) {
+            std::_Throw_C_error(iVar17);
+          }
+          uVar12 = pPVar7->mTaskCount;
+        }
+                    /* WARNING: Read-only address (ram,0x00018009bd30) is written */
+        iVar17 = _Mtx_unlock((_Mtx_internal_imp_t *)pmVar2);
+        if (iVar17 != 0) {
+          std::_Throw_C_error(iVar17);
+        }
+        CellSOA::CopyFrom((param_1->cells).pointer,(param_1->updatedCells).pointer);
+        local_1f8 = local_208.minimum.y;
+        local_188 = (int)(local_208.minimum.y + -1 + (local_208.minimum.y + -1 >> 0x1f & 0x1fU)) >>
+                    5;
+        iVar29 = local_208.minimum;
+        local_194 = (int)(iVar29 + -1 + (iVar29 + -1 >> 0x1f & 0x1fU)) >> 5;
+        local_184 = (int)(local_208.maximum.y + 0x1e + (local_208.maximum.y + 0x1e >> 0x1f & 0x1fU))
+                    >> 5;
+        iVar30 = local_208.maximum;
+        local_18c = (int)(iVar30 + 0x1e + (iVar30 + 0x1e >> 0x1f & 0x1fU)) >> 5;
+        iVar17 = param_1->width;
+        pCVar8 = (param_1->cells).pointer;
+        psVar36 = (pCVar8->elementIdx).data;
+        local_1f0 = psVar36;
+        if ((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1 == 0) {
+                    /* WARNING: Subroutine does not return */
+          _invalid_parameter_noinfo_noreturn();
+        }
+        puVar35 = (pCVar8->properties).data;
+        local_210 = puVar35;
+        if ((pCVar8->properties).end == puVar35) {
+                    /* WARNING: Subroutine does not return */
+          _invalid_parameter_noinfo_noreturn();
+        }
+        pCVar8 = (param_1->updatedCells).pointer;
+        psVar9 = (pCVar8->elementIdx).data;
+        if ((longlong)(pCVar8->elementIdx).end - (longlong)psVar9 >> 1 == 0) {
+                    /* WARNING: Subroutine does not return */
+          _invalid_parameter_noinfo_noreturn();
+        }
+        lVar21 = gElementPressureData._8_8_;
+        fVar43 = (float)local_208.maximum.y;
+        if ((int)local_1f8 < local_208.maximum.y) {
+          local_214 = (float)(local_1f8 * iVar17);
+          VVar32 = local_208.minimum;
+          iVar30 = noffset;
+          do {
+            fVar41 = (float)((int)local_214 + VVar32.x);
+            fVar42 = fVar41;
+            local_218 = (undefined  [4])(iVar16 + (int)fVar41);
+            if (iVar30 < 0) {
+              fVar42 = (float)(iVar16 + (int)fVar41);
+              local_218 = (undefined  [4])fVar41;
+            }
+            if ((undefined  [4])fVar42 != local_218) {
+              do {
+                lVar38 = (longlong)(int)fVar42;
+                uVar3 = psVar36[lVar38];
+                uVar25 = gElementPressureData._16_8_ - lVar21 >> 3;
+                if (uVar25 <= uVar3) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                peStack_1b0 = (error_category *)(lVar21 + (ulonglong)uVar3 * 8);
+                _local_1b8 = (vector<> *)
+                             (CONCAT26(uVar3,(int6)CONCAT35(auStack_1b3,
+                                                            CONCAT14(puVar35[lVar38],fVar42))) &
+                             0xffffff01ffffffff);
+                local_1a8 = *(byte *)peStack_1b0 & 3;
+                if ((((puVar35[lVar38] & 1) == 0) && (psVar9[lVar38] == uVar3)) && (local_1a8 < 2))
+                {
+                  iVar29 = (int)fVar42 + iVar30;
+                  if (psVar9[lVar38] == uVar3) {
+                    uVar4 = psVar36[iVar29];
+                    if (uVar25 <= uVar4) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    bVar14 = *(byte *)(lVar21 + (ulonglong)uVar4 * 8) & 3;
+                    if ((((local_210[iVar29] & 1) != 0) || (psVar9[iVar29] != uVar4)) ||
+                       ((1 < bVar14 || ((uVar3 != uVar4 && (bVar14 == local_1a8))))))
+                    goto LAB_18004299d;
+                    fVar43 = UpdatePressure(param_1,(SimEvents *)param_1->simEvents,
+                                            (param_1->cells).pointer,(param_1->updatedCells).pointer
+                                            ,(int)fVar42,uVar3,*(byte *)peStack_1b0 & 3,
+                                            *(float *)&peStack_1b0->field_0x4,iVar29);
+                    iVar30 = noffset;
+                  }
+                  else {
+LAB_18004299d:
+                    fVar43 = 0.0;
+                  }
+                  uVar26 = param_1->flow;
+                  *(float *)((longlong)uVar26 + 4 + lVar38 * 0x10) =
+                       (float)iVar30 * fVar43 + *(float *)((longlong)uVar26 + 4 + lVar38 * 0x10);
+                  *(float *)((longlong)uVar26 + (longlong)iVar29 * 0x10) =
+                       *(float *)((longlong)uVar26 + (longlong)iVar29 * 0x10) -
+                       (float)iVar30 * fVar43;
+                  iVar29 = iVar17 + (int)fVar42;
+                  if (local_1b8[4] == '\0') {
+                    if ((psVar9[(int)local_1b8._0_4_] != auStack_1b3._1_2_) ||
+                       ('\x01' < (char)local_1a8)) goto LAB_180042aac;
+                    uVar3 = local_1f0[iVar29];
+                    if ((ulonglong)
+                        ((longlong)(gElementPressureData._16_8_ - gElementPressureData._8_8_) >> 3)
+                        <= (ulonglong)uVar3) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    bVar14 = *(byte *)(gElementPressureData._8_8_ + (ulonglong)uVar3 * 8) & 3;
+                    if (((((local_210[iVar29] & 1) != 0) || (psVar9[iVar29] != uVar3)) ||
+                        (1 < bVar14)) || ((auStack_1b3._1_2_ != uVar3 && (bVar14 == local_1a8))))
+                    goto LAB_180042aac;
+                    fVar43 = UpdatePressure(param_1,(SimEvents *)param_1->simEvents,
+                                            (param_1->cells).pointer,(param_1->updatedCells).pointer
+                                            ,local_1b8._0_4_,auStack_1b3._1_2_,local_1a8,
+                                            *(float *)&peStack_1b0->field_0x4,iVar29);
+                    uVar26 = param_1->flow;
+                  }
+                  else {
+LAB_180042aac:
+                    fVar43 = 0.0;
+                  }
+                  *(float *)((longlong)uVar26 + 8 + lVar38 * 0x10) =
+                       fVar43 + *(float *)((longlong)uVar26 + 8 + lVar38 * 0x10);
+                  *(float *)((longlong)uVar26 + 0xc + (longlong)iVar29 * 0x10) =
+                       *(float *)((longlong)uVar26 + 0xc + (longlong)iVar29 * 0x10) - fVar43;
+                  uVar25 = (longlong)(gElementPressureData._16_8_ - gElementPressureData._8_8_) >> 3
+                  ;
+                  if (uVar25 <= (ushort)local_1f0[iVar29]) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  if (uVar25 <= (ushort)local_1f0[noffset + (int)fVar42]) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  lVar21 = gElementPressureData._8_8_;
+                  puVar35 = local_210;
+                  psVar36 = local_1f0;
+                  iVar30 = noffset;
+                  if (((*(byte *)(gElementPressureData._8_8_ +
+                                 (ulonglong)(ushort)local_1f0[noffset + (int)fVar42] * 8) |
+                       *(byte *)(gElementPressureData._8_8_ +
+                                (ulonglong)(ushort)local_1f0[iVar29] * 8)) & 3) != 3) {
+                    iVar29 = iVar29 + noffset;
+                    if (local_1b8[4] == '\0') {
+                      if ((psVar9[(int)local_1b8._0_4_] == auStack_1b3._1_2_) &&
+                         ((char)local_1a8 < '\x02')) {
+                        uVar3 = local_1f0[iVar29];
+                        if (uVar25 <= uVar3) {
+                    /* WARNING: Subroutine does not return */
+                          _invalid_parameter_noinfo_noreturn();
+                        }
+                        bVar14 = *(byte *)(gElementPressureData._8_8_ + (ulonglong)uVar3 * 8) & 3;
+                        if (((((local_210[iVar29] & 1) == 0) && (psVar9[iVar29] == uVar3)) &&
+                            (bVar14 < 2)) && ((auStack_1b3._1_2_ == uVar3 || (bVar14 != local_1a8)))
+                           ) {
+                          UpdatePressure(param_1,(SimEvents *)param_1->simEvents,
+                                         (param_1->cells).pointer,(param_1->updatedCells).pointer,
+                                         local_1b8._0_4_,auStack_1b3._1_2_,local_1a8,
+                                         *(float *)&peStack_1b0->field_0x4,iVar29);
+                          lVar21 = gElementPressureData._8_8_;
+                          puVar35 = local_210;
+                          psVar36 = local_1f0;
+                          iVar30 = noffset;
+                        }
+                      }
+                    }
+                  }
+                }
+                fVar42 = (float)((int)fVar42 + iVar30);
+              } while ((undefined  [4])fVar42 != local_218);
+              VVar32 = local_208.minimum;
+              fVar43 = (float)local_208.maximum.y;
+            }
+            iVar29 = VVar32.x;
+            local_1f8 = local_1f8 + 1;
+            local_214 = (float)((int)local_214 + iVar17);
+          } while ((int)local_1f8 < (int)fVar43);
+          iVar30 = local_208.maximum;
+          local_1f8 = local_208.minimum.y;
+        }
+        if (iVar29 < 4) {
+          iVar29 = 3;
+        }
+        iVar18 = param_1->width + -3;
+        if (iVar18 <= iVar30) {
+          iVar30 = iVar18;
+        }
+        if (2 < (int)local_1f8) {
+          local_1f8 = 3;
+        }
+        fVar42 = (float)(param_1->height + -3);
+        local_214 = fVar43;
+        if ((int)fVar42 <= (int)fVar43) {
+          local_214 = fVar42;
+        }
+        iVar18 = iVar30 - iVar29;
+        if (iVar16 <= iVar30 - iVar29) {
+          iVar18 = iVar16;
+        }
+        if ((int)local_1f8 < (int)local_214) {
+          fVar43 = (float)(local_1f8 * iVar17 + iVar29);
+          fVar42 = local_214;
+          do {
+            lVar28 = (longlong)(int)fVar43;
+            lVar38 = (longlong)((int)fVar43 + iVar18);
+            local_218 = (undefined  [4])fVar43;
+            local_1e8 = lVar38;
+            if (lVar28 < lVar38) {
+              local_1e0 = (short *)(lVar28 << 4);
+              lVar27 = (longlong)iVar17;
+              pbVar40 = puVar35 + lVar28 + lVar27;
+              puVar39 = (ushort *)(local_1f0 + lVar28 + lVar27);
+              local_148 = -lVar27;
+              local_180 = -(longlong)local_1f0;
+              local_138 = local_180 + lVar27 * -4;
+              local_130 = lVar27 * -0x20;
+              VVar33 = (Vector2<int>)-lVar27;
+              VVar32 = (Vector2<int>)(lVar27 << 4);
+              local_140 = puVar35 + lVar27 * 2;
+              _local_1b8 = (vector<> *)(puVar35 + lVar27);
+              local_1d0 = VVar32;
+              local_1c8 = VVar33;
+              do {
+                uVar3 = puVar39[(longlong)VVar33];
+                uVar25 = gElementPressureData._16_8_ - lVar21 >> 3;
+                if (uVar25 <= uVar3) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                if ((*(byte *)(lVar21 + (ulonglong)uVar3 * 8) & 3) == 1) {
+                  if ((puVar39[local_148 * 2] != uVar3) &&
+                     ((pbVar40[(longlong)VVar33 * 2] & 1) == 0)) {
+                    pCVar8 = (param_1->cells).pointer;
+                    psVar36 = (pCVar8->elementIdx).data;
+                    if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                        (ulonglong)((longlong)pbVar40 - (longlong)local_140)) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    uVar31 = (ulonglong)
+                             *(ushort *)(local_138 + (longlong)psVar36 + (longlong)puVar39);
+                    if (uVar25 <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    if ((*(byte *)(lVar21 + uVar31 * 8) & 3) == 1) {
+                      fVar42 = DoGasPressureDisplacement
+                                         (uVar3,(int)fVar43,(int)fVar43 - iVar17,
+                                          (int)fVar43 + iVar17 * -2,param_1);
+                      uVar26 = param_1->flow;
+                      *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) =
+                           *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) - fVar42;
+                      lVar21 = local_130 + (longlong)VVar32 + (longlong)uVar26;
+                      *(float *)(lVar21 + 8 + (longlong)local_1e0) =
+                           fVar42 + *(float *)(lVar21 + 8 + (longlong)local_1e0);
+                      lVar21 = gElementPressureData._8_8_;
+                    }
+                  }
+                  uVar25 = (ulonglong)((int)fVar43 - noffset);
+                  if ((local_1f0[uVar25] != uVar3) && ((local_210[uVar25] & 1) == 0)) {
+                    pCVar8 = (param_1->cells).pointer;
+                    psVar36 = (pCVar8->elementIdx).data;
+                    if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                        uVar25) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    uVar31 = (ulonglong)(ushort)psVar36[uVar25];
+                    if ((ulonglong)(gElementPressureData._16_8_ - lVar21 >> 3) <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    if ((*(byte *)(lVar21 + uVar31 * 8) & 3) == 1) {
+                      fVar42 = DoGasPressureDisplacement
+                                         (uVar3,(int)fVar43,(int)fVar43 - noffset,
+                                          (int)fVar43 + noffset * -2,param_1);
+                      uVar26 = param_1->flow;
+                      *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) =
+                           *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) - fVar42;
+                      *(float *)((longlong)uVar26 + 8 + uVar25 * 0x10) =
+                           fVar42 + *(float *)((longlong)uVar26 + 8 + uVar25 * 0x10);
+                      lVar21 = gElementPressureData._8_8_;
+                    }
+                  }
+                  uVar25 = (ulonglong)((int)fVar43 + noffset);
+                  if ((local_1f0[uVar25] != uVar3) && ((local_210[uVar25] & 1) == 0)) {
+                    pCVar8 = (param_1->cells).pointer;
+                    psVar36 = (pCVar8->elementIdx).data;
+                    if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                        uVar25) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    uVar31 = (ulonglong)(ushort)psVar36[uVar25];
+                    if ((ulonglong)(gElementPressureData._16_8_ - lVar21 >> 3) <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    if ((*(byte *)(lVar21 + uVar31 * 8) & 3) == 1) {
+                      fVar42 = DoGasPressureDisplacement
+                                         (uVar3,(int)fVar43,(int)fVar43 + noffset,
+                                          (int)fVar43 + noffset * 2,param_1);
+                      uVar26 = param_1->flow;
+                      *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) =
+                           *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) - fVar42;
+                      *(float *)((longlong)uVar26 + 8 + uVar25 * 0x10) =
+                           fVar42 + *(float *)((longlong)uVar26 + 8 + uVar25 * 0x10);
+                      lVar21 = gElementPressureData._8_8_;
+                    }
+                  }
+                  lVar38 = local_1e8;
+                  VVar32 = local_1d0;
+                  VVar33 = local_1c8;
+                  puVar35 = local_210;
+                  if ((*puVar39 != uVar3) && ((*pbVar40 & 1) == 0)) {
+                    pCVar8 = (param_1->cells).pointer;
+                    psVar36 = (pCVar8->elementIdx).data;
+                    if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                        (ulonglong)((longlong)pbVar40 - (longlong)local_210)) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    uVar25 = (ulonglong)
+                             *(ushort *)(local_180 + (longlong)psVar36 + (longlong)puVar39);
+                    if ((ulonglong)(gElementPressureData._16_8_ - lVar21 >> 3) <= uVar25) {
+                    /* WARNING: Subroutine does not return */
+                      _invalid_parameter_noinfo_noreturn();
+                    }
+                    if ((*(byte *)(lVar21 + uVar25 * 8) & 3) == 1) {
+                      fVar42 = DoGasPressureDisplacement
+                                         (uVar3,(int)fVar43,(int)fVar43 + iVar17,
+                                          iVar17 * 2 + (int)fVar43,param_1);
+                      uVar26 = param_1->flow;
+                      *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) =
+                           *(float *)((longlong)uVar26 + 0xc + (longlong)local_1e0) - fVar42;
+                      *(float *)((longlong)uVar26 + (longlong)local_1d0 + 8 + (longlong)local_1e0) =
+                           fVar42 + *(float *)((longlong)uVar26 + (longlong)local_1d0 + 8 +
+                                              (longlong)local_1e0);
+                      lVar38 = local_1e8;
+                      VVar32 = local_1d0;
+                      lVar21 = gElementPressureData._8_8_;
+                      VVar33 = local_1c8;
+                      puVar35 = local_210;
+                    }
+                  }
+                }
+                fVar43 = (float)((int)fVar43 + 1);
+                puVar39 = puVar39 + 1;
+                pbVar40 = pbVar40 + 1;
+                local_1e0 = local_1e0 + 8;
+                fVar42 = local_214;
+              } while ((longlong)pbVar40 - (longlong)_local_1b8 < lVar38);
+            }
+            local_1f8 = local_1f8 + 1;
+            fVar43 = (float)((int)local_218 + iVar17);
+            local_218 = (undefined  [4])fVar43;
+          } while ((int)local_1f8 < (int)fVar42);
+        }
+        CellSOA::CopyFrom((param_1->cells).pointer,(param_1->updatedCells).pointer);
+        ConsolidateEvents(this,param_1);
+        local_1e8 = (longlong)iVar5;
+        VVar32 = local_208.minimum;
+        iVar30 = local_208.minimum;
+        iVar17 = local_208.maximum;
+        if (iVar17 != iVar30) {
+          pCVar8 = (param_1->cells).pointer;
+          pfVar10 = (pCVar8->mass).data;
+          if ((longlong)(pCVar8->mass).end - (longlong)pfVar10 >> 2 == 0) {
+                    /* WARNING: Subroutine does not return */
+            _invalid_parameter_noinfo_noreturn();
+          }
+          psVar36 = (pCVar8->elementIdx).data;
+          local_1e0 = psVar36;
+          if ((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1 == 0) {
+                    /* WARNING: Subroutine does not return */
+            _invalid_parameter_noinfo_noreturn();
+          }
+          fVar43 = (float)local_208.maximum.y;
+          if (local_208.minimum.y < local_208.maximum.y) {
+            iVar29 = iVar5 * local_208.minimum.y;
+            lVar21 = gElementLiquidData._8_8_;
+            iVar17 = local_208.minimum.y;
+            do {
+              iVar18 = iVar29 + VVar32.x;
+              iVar30 = iVar16 + iVar18;
+              lVar38 = (longlong)iVar18;
+              if (lVar38 < iVar30) {
+                do {
+                  if ((ulonglong)((gElementLiquidData._16_8_ - lVar21) / 0x18) <=
+                      (ulonglong)(ushort)psVar36[lVar38]) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  if (((*(byte *)(lVar21 + (ulonglong)(ushort)psVar36[lVar38] * 0x18) & 3) == 2) &&
+                     (0.0 < pfVar10[lVar38])) {
+                    UpdateLiquid(param_1,(SimEvents *)param_1->simEvents,iVar18);
+                    lVar21 = gElementLiquidData._8_8_;
+                    psVar36 = local_1e0;
+                  }
+                  iVar18 = iVar18 + 1;
+                  lVar38 = lVar38 + 1;
+                } while (lVar38 < iVar30);
+                VVar32 = local_208.minimum;
+                fVar43 = (float)local_208.maximum.y;
+              }
+              iVar30 = VVar32.x;
+              iVar17 = iVar17 + 1;
+              iVar29 = iVar29 + iVar5;
+            } while (iVar17 < (int)fVar43);
+            iVar17 = local_208.maximum;
+          }
+          if (iVar30 < 4) {
+            iVar30 = 3;
+          }
+          iVar29 = param_1->width + -3;
+          if (iVar29 <= iVar17) {
+            iVar17 = iVar29;
+          }
+          iVar29 = local_208.minimum.y;
+          if (2 < local_208.minimum.y) {
+            iVar29 = 3;
+          }
+          fVar42 = (float)(param_1->height + -3);
+          local_214 = fVar43;
+          if ((int)fVar42 <= (int)fVar43) {
+            local_214 = fVar42;
+          }
+          iVar18 = iVar17 - iVar30;
+          if (iVar16 <= iVar17 - iVar30) {
+            iVar18 = iVar16;
+          }
+          if (iVar29 < (int)local_214) {
+            fVar42 = (float)(iVar29 * iVar5 + iVar30);
+            lVar21 = local_1e8;
+            iVar17 = noffset;
+            fVar43 = local_214;
+            do {
+              uVar25 = (ulonglong)(int)fVar42;
+              local_180 = (longlong)(iVar18 + (int)fVar42);
+              local_218 = (undefined  [4])fVar42;
+              if ((longlong)uVar25 < local_180) {
+                lVar38 = uVar25 << 4;
+                puVar39 = (ushort *)(psVar36 + uVar25);
+                _local_1b8 = (vector<> *)(lVar21 << 4);
+                do {
+                  uVar3 = *puVar39;
+                  if ((ulonglong)
+                      ((longlong)(gElementPressureData._16_8_ - gElementPressureData._8_8_) >> 3) <=
+                      (ulonglong)uVar3) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  if ((*(byte *)(gElementPressureData._8_8_ + (ulonglong)uVar3 * 8) & 3) == 2) {
+                    if (psVar36[(int)fVar42 - iVar17] != uVar3) {
+                      fVar43 = DoLiquidPressureDisplacement
+                                         (uVar3,(int)fVar42,(int)fVar42 - iVar17,
+                                          (int)fVar42 + iVar17 * -2,param_1);
+                      uVar26 = param_1->flow;
+                      *(float *)(lVar38 + (longlong)uVar26) =
+                           fVar43 + *(float *)(lVar38 + (longlong)uVar26);
+                      *(float *)(lVar38 + -0xc + (longlong)uVar26) =
+                           *(float *)(lVar38 + -0xc + (longlong)uVar26) - fVar43;
+                      psVar36 = local_1e0;
+                      iVar17 = noffset;
+                    }
+                    if (psVar36[(int)fVar42 + iVar17] != uVar3) {
+                      fVar43 = DoLiquidPressureDisplacement
+                                         (uVar3,(int)fVar42,(int)fVar42 + iVar17,
+                                          (int)fVar42 + iVar17 * 2,param_1);
+                      uVar26 = param_1->flow;
+                      *(float *)((longlong)uVar26 + lVar38) =
+                           *(float *)((longlong)uVar26 + lVar38) - fVar43;
+                      *(float *)(lVar38 + -0xc + (longlong)uVar26) =
+                           fVar43 + *(float *)(lVar38 + -0xc + (longlong)uVar26);
+                      psVar36 = local_1e0;
+                      iVar17 = noffset;
+                    }
+                    lVar21 = local_1e8;
+                    if (puVar39[local_1e8] != uVar3) {
+                      pCVar8 = (param_1->updatedCells).pointer;
+                      psVar9 = (pCVar8->elementIdx).data;
+                      if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar9 >> 1) <=
+                          uVar25) {
+                    /* WARNING: Subroutine does not return */
+                        _invalid_parameter_noinfo_noreturn();
+                      }
+                      uVar31 = (ulonglong)
+                               *(ushort *)
+                                (((longlong)puVar39 - (longlong)psVar36) + (longlong)psVar9);
+                      if ((ulonglong)
+                          ((longlong)
+                           (gElementPostProcessData._16_8_ - gElementPostProcessData._8_8_) / 0x2c)
+                          <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                        _invalid_parameter_noinfo_noreturn();
+                      }
+                      pfVar10 = (pCVar8->mass).data;
+                      if ((ulonglong)((longlong)(pCVar8->mass).end - (longlong)pfVar10 >> 2) <=
+                          uVar25) {
+                    /* WARNING: Subroutine does not return */
+                        _invalid_parameter_noinfo_noreturn();
+                      }
+                      fVar43 = *(float *)(uVar31 * 0x2c + 0x20 + gElementPostProcessData._8_8_);
+                      pfVar10 = pfVar10 + uVar25;
+                      if (fVar43 < *pfVar10 || fVar43 == *pfVar10) {
+                        fVar43 = DoLiquidPressureDisplacement
+                                           (uVar3,(int)fVar42,(int)fVar42 + iVar5,
+                                            (int)fVar42 + iVar5 * 2,param_1);
+                        uVar26 = param_1->flow;
+                        *(float *)((longlong)uVar26 + 0xc + lVar38) =
+                             fVar43 + *(float *)((longlong)uVar26 + 0xc + lVar38);
+                        *(float *)((longlong)&_local_1b8->data + (longlong)uVar26 + lVar38) =
+                             *(float *)((longlong)&_local_1b8->data + (longlong)uVar26 + lVar38) -
+                             fVar43;
+                        lVar21 = local_1e8;
+                        iVar17 = noffset;
+                      }
+                    }
+                  }
+                  fVar42 = (float)((int)fVar42 + 1);
+                  uVar25 = uVar25 + 1;
+                  puVar39 = puVar39 + 1;
+                  lVar38 = lVar38 + 0x10;
+                  psVar36 = local_1e0;
+                  fVar43 = local_214;
+                } while ((longlong)uVar25 < local_180);
+              }
+              iVar29 = iVar29 + 1;
+              fVar42 = (float)((int)local_218 + iVar5);
+              psVar36 = local_1e0;
+              local_218 = (undefined  [4])fVar42;
+            } while (iVar29 < (int)fVar43);
+          }
+          CellSOA::CopyFrom((param_1->cells).pointer,(param_1->updatedCells).pointer);
+          VVar32 = local_208.minimum;
+        }
+        pCVar8 = (param_1->cells).pointer;
+        puVar35 = (pCVar8->diseaseIdx).data;
+        if ((pCVar8->diseaseIdx).end == puVar35) {
+                    /* WARNING: Subroutine does not return */
+          _invalid_parameter_noinfo_noreturn();
+        }
+        if (local_208.minimum.y < local_208.maximum.y) {
+          local_218 = (undefined  [4])(iVar5 * local_208.minimum.y);
+          iVar17 = local_208.minimum.y;
+          iVar30 = local_208.maximum.y;
+          do {
+            lVar21 = local_1e8;
+            iVar18 = (int)local_218 + VVar32.x;
+            iVar29 = iVar16 + iVar18;
+            lVar38 = (longlong)iVar18;
+            if (lVar38 < iVar29) {
+              do {
+                if ((puVar35[lVar38] != 0xff) || (uVar15 = 0xff, puVar35[lVar38 + 1] != 0xff)) {
+                  Disease::UpdateCells
+                            ((Disease *)gDisease,0.2,param_1,(SimEvents *)param_1->simEvents,iVar18,
+                             iVar18 + 1);
+                  uVar15 = puVar35[lVar38];
+                }
+                if ((uVar15 != 0xff) || (puVar35[lVar21 + lVar38] != 0xff)) {
+                  Disease::UpdateCells
+                            ((Disease *)gDisease,0.2,param_1,(SimEvents *)param_1->simEvents,iVar18,
+                             iVar18 + iVar5);
+                }
+                iVar18 = iVar18 + 1;
+                lVar38 = lVar38 + 1;
+              } while (lVar38 < iVar29);
+              VVar32 = local_208.minimum;
+              iVar30 = local_208.maximum.y;
+            }
+            iVar17 = iVar17 + 1;
+            local_218 = (undefined  [4])((int)local_218 + iVar5);
+          } while (iVar17 < iVar30);
+        }
+        if (param_1->radiationEnabled != false) {
+          uVar15 = Disease::GetDiseaseIndex((Disease *)gDisease,0xd49f77d6);
+          if ((*(int *)(*(longlong *)
+                         ((longlong)ThreadLocalStoragePointer + (ulonglong)_tls_index * 8) + 0x110)
+               < DAT_1800cd31c) &&
+             (_Init_thread_header(&DAT_1800cd31c), auVar13 = ___xmm@3e19999a400000003f8000003e800000
+             , DAT_1800cd31c == -1)) {
+            adjacentOffsets[0].x = -2.0;
+            adjacentOffsets[0].y = -2.0;
+            adjacentOffsets[0].z = 0.1;
+            adjacentOffsets[1].x = -1.0;
+            adjacentOffsets[1].y = -2.0;
+            adjacentOffsets[1].z = 0.15;
+            adjacentOffsets[2].x = 0.0;
+            adjacentOffsets[2].y = -2.0;
+            adjacentOffsets[2].z = 0.25;
+            adjacentOffsets[3].x = 1.0;
+            adjacentOffsets[3].y = -2.0;
+            adjacentOffsets[3].z = 0.15;
+            adjacentOffsets[4].x = 2.0;
+            adjacentOffsets[4].y = -2.0;
+            adjacentOffsets[4].z = 0.1;
+            adjacentOffsets[5].x = -2.0;
+            adjacentOffsets[5].y = -1.0;
+            adjacentOffsets[5].z = 0.15;
+            adjacentOffsets[6].x = -1.0;
+            adjacentOffsets[6].y = -1.0;
+            adjacentOffsets[6].z = 0.5;
+            adjacentOffsets[7].x = 0.0;
+            adjacentOffsets[7].y = -1.0;
+            adjacentOffsets[7].z = 0.75;
+            adjacentOffsets[8].x = 1.0;
+            adjacentOffsets[8].y = -1.0;
+            adjacentOffsets[8].z = 0.5;
+            adjacentOffsets[9].x = 2.0;
+            adjacentOffsets[9].y = -1.0;
+            adjacentOffsets[9].z = 0.15;
+            adjacentOffsets[10].x = -2.0;
+            adjacentOffsets[10].y = 0.0;
+            adjacentOffsets[10].z = 0.25;
+            adjacentOffsets[0xb].x = -1.0;
+            adjacentOffsets[0xb].y = 0.0;
+            adjacentOffsets[0xb].z = 0.75;
+            adjacentOffsets[0xc].x = 0.0;
+            adjacentOffsets[0xc].y = 0.0;
+            adjacentOffsets[0xc].z = 1.0;
+            adjacentOffsets[0xd].x = 1.0;
+            adjacentOffsets[0xd].y = 0.0;
+            adjacentOffsets[0xd].z = 0.75;
+            adjacentOffsets[0xe].x = 2.0;
+            adjacentOffsets[0xe].y = 0.0;
+            adjacentOffsets[0xe].z = 0.25;
+            adjacentOffsets[0xf].x = -2.0;
+            adjacentOffsets[0xf].y = 1.0;
+            adjacentOffsets[0xf].z = 0.15;
+            adjacentOffsets[0x10].x = -1.0;
+            adjacentOffsets[0x10].y = 1.0;
+            adjacentOffsets[0x10].z = 0.5;
+            adjacentOffsets[0x11].x = 0.0;
+            adjacentOffsets[0x11].y = 1.0;
+            adjacentOffsets[0x11].z = 0.75;
+            adjacentOffsets[0x12].x = 1.0;
+            adjacentOffsets[0x12].y = 1.0;
+            adjacentOffsets[0x12].z = 0.5;
+            adjacentOffsets[0x13].x = 2.0;
+            adjacentOffsets[0x13].y = 1.0;
+            adjacentOffsets[0x13].z = 0.15;
+            adjacentOffsets[0x14].x = -2.0;
+            adjacentOffsets[0x14].y = 2.0;
+            adjacentOffsets[0x14].z = 0.1;
+            adjacentOffsets[0x15].x = -1.0;
+            adjacentOffsets[0x15].y = 2.0;
+            adjacentOffsets[0x15].z = 0.15;
+            adjacentOffsets[0x16].x = 0.0;
+            adjacentOffsets[0x16].y = 2.0;
+            adjacentOffsets[0x16].z = (float)___xmm@3e19999a400000003f8000003e800000;
+            adjacentOffsets[0x17].x = (float)_UNK_18009bd34;
+            adjacentOffsets[0x17].y = (float)_UNK_18009bd38;
+            adjacentOffsets[0x17].z = (float)_UNK_18009bd3c;
+            adjacentOffsets[0x18].x = 2.0;
+            adjacentOffsets[0x18].y = 2.0;
+            adjacentOffsets[0x18].z = 0.1;
+            ___xmm@3e19999a400000003f8000003e800000 = auVar13;
+            atexit(`SimBase::UpdateData'::`87'::`dynamic_atexit_destructor_for_'adjacentOffsets'');
+            _Init_thread_footer(&DAT_1800cd31c);
+          }
+          _local_1b8 = &param_1->cosmicRadiationOcclusion;
+          local_218 = (undefined  [4])0x3f800000;
+          peStack_1b0 = (error_category *)local_218;
+          local_158 = _local_1b8;
+          peStack_150 = peStack_1b0;
+          std::vector<>::_Resize<>(_local_1b8,(longlong)(local_198 * iVar5),(<> *)local_1b8);
+          if (local_208.minimum.y <= local_208.maximum.y) {
+            iVar30 = iVar5 * local_208.maximum.y;
+            iVar17 = local_208.maximum.y;
+            do {
+              iVar18 = local_208.minimum.x + iVar30;
+              iVar29 = iVar16 + iVar18;
+              for (uVar25 = (ulonglong)iVar18; (longlong)uVar25 < (longlong)iVar29;
+                  uVar25 = uVar25 + 1) {
+                fVar43 = 1.0;
+                iVar24 = param_1->width;
+                iVar19 = iVar18 / iVar24 + 1;
+                if (iVar19 < local_208.maximum.y) {
+                  uVar31 = (ulonglong)(iVar24 * iVar19 + iVar18 % iVar24);
+                  pfVar10 = (param_1->cosmicRadiationOcclusion).data;
+                  if ((ulonglong)
+                      ((longlong)(param_1->cosmicRadiationOcclusion).end - (longlong)pfVar10 >> 2)
+                      <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  fVar43 = pfVar10[uVar31];
+                }
+                pCVar8 = (param_1->updatedCells).pointer;
+                uVar31 = (ulonglong)iVar18;
+                psVar36 = (pCVar8->elementIdx).data;
+                if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                    uVar31) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                uVar37 = (ulonglong)(ushort)psVar36[uVar31];
+                if ((ulonglong)
+                    ((longlong)(gElementRadiationData._16_8_ - gElementRadiationData._8_8_) >> 3) <=
+                    uVar37) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                fVar42 = *(float *)(gElementRadiationData._8_8_ + uVar37 * 8);
+                puVar35 = (pCVar8->properties).data;
+                if ((ulonglong)((longlong)(pCVar8->properties).end - (longlong)puVar35) <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                if ((char)puVar35[uVar31] < '\0') {
+                  fVar42 = fVar42 * param_1->RADIATION_CONSTRUCTED_FACTOR;
+                }
+                else {
+                  pfVar10 = (pCVar8->mass).data;
+                  if ((ulonglong)((longlong)(pCVar8->mass).end - (longlong)pfVar10 >> 2) <= uVar25)
+                  {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  fVar42 = (pfVar10[uVar25] / param_1->RADIATION_MAX_MASS) * fVar42 *
+                           param_1->RADIATION_DENSITY_WEIGHT +
+                           fVar42 * param_1->RADIATION_BASE_WEIGHT;
+                }
+                if (1.0 <= fVar42) {
+                  fVar42 = 1.0;
+                }
+                if (fVar42 <= 0.0) {
+                  fVar42 = 0.0;
+                }
+                local_218 = (undefined  [4])((1.0 - fVar42) * fVar43);
+                if ((float)local_218 < 0.01) {
+                  local_218 = (undefined  [4])0x0;
+                }
+                local_214 = 0.0;
+                pfVar10 = (param_1->cosmicRadiationOcclusion).data;
+                if ((ulonglong)
+                    ((longlong)(param_1->cosmicRadiationOcclusion).end - (longlong)pfVar10 >> 2) <=
+                    uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                pfVar22 = &local_214;
+                if (0.0 < (float)local_218) {
+                  pfVar22 = (float *)local_218;
+                }
+                pfVar10[uVar25] = *pfVar22;
+                pCVar8 = (param_1->updatedCells).pointer;
+                pfVar10 = (pCVar8->radiation).data;
+                if ((ulonglong)((longlong)(pCVar8->radiation).end - (longlong)pfVar10 >> 2) <=
+                    uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                fVar43 = pfVar10[uVar25];
+                fVar42 = fVar43 / param_1->RADIATION_LINGER_RATE;
+                if (fVar42 == 0.0) {
+                  fVar43 = fVar43 - 1.0;
+                  if (fVar43 <= 0.0) {
+                    fVar43 = 0.0;
+                  }
+                }
+                else {
+                  fVar43 = fVar43 - fVar42;
+                }
+                pfVar10[uVar25] = fVar43;
+                iVar18 = iVar18 + 1;
+              }
+              iVar17 = iVar17 + -1;
+              iVar30 = iVar30 - iVar5;
+            } while (local_208.minimum.y <= iVar17);
+          }
+          if (local_208.minimum.y < local_208.maximum.y) {
+            local_218 = (undefined  [4])(iVar5 * local_208.minimum.y);
+            iVar17 = local_208.minimum.y;
+            do {
+              iVar29 = local_208.minimum.x + (int)local_218;
+              iVar30 = iVar16 + iVar29;
+              lVar21 = gElementRadiationData._8_8_;
+              for (uVar25 = (ulonglong)iVar29; gElementRadiationData._8_8_ = lVar21,
+                  (longlong)uVar25 < (longlong)iVar30; uVar25 = uVar25 + 1) {
+                pCVar8 = (param_1->updatedCells).pointer;
+                psVar36 = (pCVar8->elementIdx).data;
+                if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                    uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                uVar31 = (ulonglong)(ushort)psVar36[uVar25];
+                if ((ulonglong)(gElementRadiationData._16_8_ - lVar21 >> 3) <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                if (0.0 < *(float *)(lVar21 + 4 + uVar31 * 8)) {
+                  pfVar10 = (pCVar8->mass).data;
+                  if ((ulonglong)((longlong)(pCVar8->mass).end - (longlong)pfVar10 >> 2) <= uVar25)
+                  {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  fVar43 = pfVar10[uVar25];
+                  iVar18 = param_1->width;
+                  pVVar34 = adjacentOffsets;
+                  do {
+                    uVar6._0_4_ = pVVar34->x;
+                    uVar6._4_4_ = pVVar34->y;
+                    local_170 = pVVar34->z;
+                    local_178._0_4_ = (float)uVar6;
+                    iVar19 = (int)(float)local_178 + iVar29 % iVar18;
+                    local_178._4_4_ = (float)((ulonglong)uVar6 >> 0x20);
+                    iVar24 = (int)local_178._4_4_ + iVar29 / iVar18;
+                    local_178 = uVar6;
+                    if ((((local_208.minimum.x <= iVar19) && (local_208.minimum.y <= iVar24)) &&
+                        (iVar19 <= local_208.maximum.x)) && (iVar24 <= local_208.maximum.y)) {
+                      pCVar8 = (param_1->updatedCells).pointer;
+                      uVar37 = (ulonglong)(iVar24 * param_1->width + iVar19);
+                      pfVar10 = (pCVar8->radiation).data;
+                      if ((ulonglong)((longlong)(pCVar8->radiation).end - (longlong)pfVar10 >> 2) <=
+                          uVar37) {
+                    /* WARNING: Subroutine does not return */
+                        _invalid_parameter_noinfo_noreturn();
+                      }
+                      pfVar10[uVar37] =
+                           fVar43 * 0.001 * *(float *)(lVar21 + 4 + uVar31 * 8) * local_170 +
+                           pfVar10[uVar37];
+                    }
+                    pVVar34 = pVVar34 + 1;
+                  } while ((longlong)pVVar34 < 0x1800cd31c);
+                }
+                pCVar8 = (param_1->updatedCells).pointer;
+                puVar35 = (pCVar8->diseaseIdx).data;
+                if ((ulonglong)((longlong)(pCVar8->diseaseIdx).end - (longlong)puVar35) <= uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                if (puVar35[uVar25] == uVar15) {
+                  piVar11 = (pCVar8->diseaseCount).data;
+                  if ((ulonglong)((longlong)(pCVar8->diseaseCount).end - (longlong)piVar11 >> 2) <=
+                      uVar25) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  pfVar10 = (pCVar8->radiation).data;
+                  if ((ulonglong)((longlong)(pCVar8->radiation).end - (longlong)pfVar10 >> 2) <=
+                      uVar25) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  pfVar10[uVar25] = (float)piVar11[uVar25] * 0.001 + pfVar10[uVar25];
+                }
+                pfVar10 = (param_1->cosmicRadiationOcclusion).data;
+                if ((ulonglong)
+                    ((longlong)(param_1->cosmicRadiationOcclusion).end - (longlong)pfVar10 >> 2) <=
+                    uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                fVar43 = pfVar10[uVar25];
+                if (0.0 < fVar43) {
+                  pCVar8 = (param_1->updatedCells).pointer;
+                  pfVar10 = (pCVar8->radiation).data;
+                  if ((ulonglong)((longlong)(pCVar8->radiation).end - (longlong)pfVar10 >> 2) <=
+                      uVar25) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  pfVar10[uVar25] =
+                       ((float)local_f0.y / param_1->RADIATION_LINGER_RATE) * fVar43 +
+                       pfVar10[uVar25];
+                }
+                pCVar8 = (param_1->updatedCells).pointer;
+                pfVar10 = (pCVar8->radiation).data;
+                if ((ulonglong)((longlong)(pCVar8->radiation).end - (longlong)pfVar10 >> 2) <=
+                    uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                pfVar10 = pfVar10 + uVar25;
+                if (0.0 <= *pfVar10) {
+                  pfVar22 = pfVar10;
+                  if (9000000.0 < *pfVar10) {
+                    pfVar22 = &SIM_MAX_RADIATION;
+                  }
+                }
+                else {
+                  pfVar22 = &SIM_MIN_RADIATION;
+                }
+                *pfVar10 = *pfVar22;
+                pCVar8 = (param_1->updatedCells).pointer;
+                pfVar10 = (pCVar8->radiation).data;
+                if ((ulonglong)((longlong)(pCVar8->radiation).end - (longlong)pfVar10 >> 2) <=
+                    uVar25) {
+                    /* WARNING: Subroutine does not return */
+                  _invalid_parameter_noinfo_noreturn();
+                }
+                if (pfVar10[uVar25] <= 0.01) {
+                  pfVar10[uVar25] = 0.0;
+                }
+                iVar29 = iVar29 + 1;
+                lVar21 = gElementRadiationData._8_8_;
+              }
+              iVar17 = iVar17 + 1;
+              local_218 = (undefined  [4])((int)local_218 + iVar5);
+            } while (iVar17 < local_208.maximum.y);
+          }
+        }
+        SimData::UpdateComponents(param_1,0.2,&local_208);
+        iVar16 = local_194 * 0x20 + 1;
+        if (local_1d8 <= iVar16) {
+          local_1d8 = iVar16;
+        }
+        iVar17 = local_18c * 0x20 + 1;
+        iVar16 = local_190 + 1;
+        if (iVar17 <= local_190 + 1) {
+          iVar16 = iVar17;
+        }
+        iVar17 = param_1->width + -1;
+        if (iVar16 <= iVar17) {
+          iVar17 = iVar16;
+        }
+        iVar30 = local_188 * 0x20 + 1;
+        iVar16 = local_100.minimum.y;
+        if (local_100.minimum.y <= iVar30) {
+          iVar16 = iVar30;
+        }
+        iVar29 = local_184 * 0x20 + 1;
+        iVar30 = local_100.maximum.y + 1;
+        if (iVar29 <= local_100.maximum.y + 1) {
+          iVar30 = iVar29;
+        }
+        iVar29 = param_1->height + -1;
+        if (iVar30 <= iVar29) {
+          iVar29 = iVar30;
+        }
+        iVar30 = iVar16;
+        lVar21 = gElementPostProcessData._8_8_;
+        iVar18 = local_1d8;
+        iVar24 = iVar16;
+        if (param_1->worldZones != (unique_ptr<>)0x0) {
+          for (; iVar30 < iVar29; iVar30 = iVar30 + 1) {
+            iVar19 = iVar30 * param_1->width;
+            uVar25 = (ulonglong)(local_1d8 + iVar19);
+            lVar38 = (longlong)(iVar17 + iVar19);
+            if ((longlong)uVar25 < lVar38) {
+              lVar28 = uVar25 << 4;
+              do {
+                if (*(char *)(uVar25 + (longlong)param_1->worldZones) == -1) {
+                  pCVar8 = (param_1->updatedCells).pointer;
+                  psVar36 = (pCVar8->elementIdx).data;
+                  if ((ulonglong)((longlong)(pCVar8->elementIdx).end - (longlong)psVar36 >> 1) <=
+                      uVar25) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  uVar31 = (ulonglong)(ushort)psVar36[uVar25];
+                  if ((ulonglong)((gElementPostProcessData._16_8_ - lVar21) / 0x2c) <= uVar31) {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  fVar43 = 0.0;
+                  bVar14 = *(byte *)(uVar31 * 0x2c + 4 + lVar21) & 3;
+                  if (bVar14 == 1) {
+                    fVar43 = 1.0;
+                  }
+                  else if (bVar14 == 2) {
+                    fVar43 = 1000.0;
+                  }
+                  else if (bVar14 == 3) goto LAB_180043d41;
+                  pfVar10 = (pCVar8->mass).data;
+                  if ((ulonglong)((longlong)(pCVar8->mass).end - (longlong)pfVar10 >> 2) <= uVar25)
+                  {
+                    /* WARNING: Subroutine does not return */
+                    _invalid_parameter_noinfo_noreturn();
+                  }
+                  fVar43 = pfVar10[uVar25] - fVar43 * 0.02;
+                  if (fVar43 <= 0.0) {
+                    fVar43 = 0.0;
+                  }
+                  pfVar10[uVar25] = fVar43;
+                  *(undefined4 *)(lVar28 + (longlong)param_1->flow) = 0xbe4ccccd;
+                  *(undefined4 *)(lVar28 + 4 + (longlong)param_1->flow) = 0x3e4ccccd;
+                  *(undefined4 *)(lVar28 + 8 + (longlong)param_1->flow) = 0x3e4ccccd;
+                  *(undefined4 *)(lVar28 + 0xc + (longlong)param_1->flow) = 0xbe4ccccd;
+                  lVar21 = gElementPostProcessData._8_8_;
+                }
+LAB_180043d41:
+                uVar25 = uVar25 + 1;
+                lVar28 = lVar28 + 0x10;
+              } while ((longlong)uVar25 < lVar38);
+            }
+          }
+        }
+        for (; iVar24 < iVar29; iVar24 = iVar24 + 1) {
+          iVar19 = iVar24 * param_1->width;
+          iVar30 = iVar19 + iVar18;
+          for (; iVar30 < iVar19 + iVar17; iVar30 = iVar30 + 1) {
+            PostProcessCell(param_1,(SimEvents *)param_1->simEvents,iVar30);
+            iVar18 = local_1d8;
+          }
+        }
+        Disease::PostProcess
+                  ((Disease *)gDisease,param_1,(SimEvents *)param_1->simEvents,iVar18,iVar17,iVar16,
+                   iVar29);
+        local_168 = (Region *)&local_168[1].maximum;
+      } while (local_168 != local_128);
+    }
+    param_1->tickCount = param_1->tickCount + 1;
+  }
+  return;
+}
+
