@@ -1,0 +1,13 @@
+bool UpdateNeighbourLiquidMass(SimData* simData, SimEvents* simEvent, int srcCellIdx, int srcCellElement, int dstCellIdx, int dstCellElement, float massToMove, uchar diseaseIdxToAdd, int diseaseCountToAdd)
+	dstCellのupdatedなelementがsrcCellElementと一致すればAddMassAndUpdateTemperature呼んでtrue
+	dstが液体か（ガスかつDisplaceGasに失敗した）ならfalse
+	それ以外はElementを上書きしてAddMassAndUpdateTemperature呼んでtrue
+
+void AddMassAndUpdateTemperature(CellSOA* cells, CellSOA* updatedCells, int cellIdx, float massToAdd,float addedMassTemperature, uchar diseaseIdxToAdd, int diseaseCountToAdd)
+	cellIdxの質量を増やし、温度を加重平均で更新し、AddDiseaseToCellを呼ぶ
+	温度が負か10000以上になると強制クラッシュ
+
+Disease::AddDiseaseToCell(Disease* this,CellSOA* updatedCells,in cellIdx,uchar diseaseIdxToAdd,int diseaseCountToAdd);
+
+CellSOA::ModifyDiseaseCount(CellSOA *this,int cellIndex,int addValue)
+	ただただdiseaseCountを増やし、0だったらClearDisease呼ぶだけ
