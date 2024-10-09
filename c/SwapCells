@@ -1,0 +1,71 @@
+
+void __thiscall CellSOA::SwapCells(CellSOA *this,int param_1,int param_2)
+
+{
+  float fVar1;
+  uchar uVar2;
+  short sVar3;
+  int iVar4;
+  short *psVar5;
+  float *pfVar6;
+  uchar *puVar7;
+  int *piVar8;
+  ulonglong uVar9;
+  ulonglong uVar10;
+  ulonglong uVar11;
+  
+  uVar11 = (ulonglong)param_2;
+  psVar5 = (this->elementIdx).data;
+  uVar9 = (longlong)(this->elementIdx).end - (longlong)psVar5 >> 1;
+  if ((uVar11 < uVar9) && (uVar10 = (ulonglong)param_1, uVar10 < uVar9)) {
+    sVar3 = psVar5[uVar10];
+    psVar5[uVar10] = psVar5[uVar11];
+    psVar5[uVar11] = sVar3;
+    pfVar6 = (this->mass).data;
+    uVar9 = (longlong)(this->mass).end - (longlong)pfVar6 >> 2;
+    if ((uVar11 < uVar9) && (uVar10 < uVar9)) {
+      fVar1 = pfVar6[uVar10];
+      pfVar6[uVar10] = pfVar6[uVar11];
+      pfVar6[uVar11] = fVar1;
+      pfVar6 = (this->temperature).data;
+      uVar9 = (longlong)(this->temperature).end - (longlong)pfVar6 >> 2;
+      if ((uVar11 < uVar9) && (uVar10 < uVar9)) {
+        fVar1 = pfVar6[uVar10];
+        pfVar6[uVar10] = pfVar6[uVar11];
+        pfVar6[uVar11] = fVar1;
+        puVar7 = (this->diseaseIdx).data;
+        uVar9 = (longlong)(this->diseaseIdx).end - (longlong)puVar7;
+        if ((uVar11 < uVar9) && (uVar10 < uVar9)) {
+          uVar2 = puVar7[uVar10];
+          puVar7[uVar10] = puVar7[uVar11];
+          puVar7[uVar11] = uVar2;
+          piVar8 = (this->diseaseCount).data;
+          uVar9 = (longlong)(this->diseaseCount).end - (longlong)piVar8 >> 2;
+          if ((uVar11 < uVar9) && (uVar10 < uVar9)) {
+            iVar4 = piVar8[uVar10];
+            piVar8[uVar10] = piVar8[uVar11];
+            piVar8[uVar11] = iVar4;
+            puVar7 = (this->diseaseInfestationTickCount).data;
+            uVar9 = (longlong)(this->diseaseInfestationTickCount).end - (longlong)puVar7;
+            if ((uVar11 < uVar9) && (uVar10 < uVar9)) {
+              uVar2 = puVar7[uVar10];
+              puVar7[uVar10] = puVar7[uVar11];
+              puVar7[uVar11] = uVar2;
+              pfVar6 = (this->diseaseGrowthAccumulatedError).data;
+              uVar9 = (longlong)(this->diseaseGrowthAccumulatedError).end - (longlong)pfVar6 >> 2;
+              if ((uVar11 < uVar9) && (uVar10 < uVar9)) {
+                fVar1 = pfVar6[uVar10];
+                pfVar6[uVar10] = pfVar6[uVar11];
+                pfVar6[uVar11] = fVar1;
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
+
