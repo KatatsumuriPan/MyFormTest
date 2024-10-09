@@ -1,0 +1,107 @@
+
+void __thiscall
+Disease::AddDiseaseToCell
+          (Disease *this,CellSOA *updatedCells,int cellIdx,uchar diseaseIdxToAdd,
+          int diseaseCountToAdd)
+
+{
+  byte bVar1;
+  uchar *puVar2;
+  int *piVar3;
+  float *pfVar4;
+  DiseaseInfo *pDVar5;
+  DiseaseInfo *pDVar6;
+  int iVar7;
+  byte bVar8;
+  ulonglong uVar9;
+  int iVar10;
+  float fVar11;
+  float fVar12;
+  
+  uVar9 = (ulonglong)cellIdx;
+  puVar2 = (updatedCells->diseaseIdx).data;
+  if (uVar9 < (ulonglong)((longlong)(updatedCells->diseaseIdx).end - (longlong)puVar2)) {
+    piVar3 = (updatedCells->diseaseCount).data;
+    bVar1 = puVar2[uVar9];
+    if ((uVar9 < (ulonglong)((longlong)(updatedCells->diseaseCount).end - (longlong)piVar3 >> 2)) &&
+       (iVar7 = piVar3[uVar9],
+       uVar9 < (ulonglong)((longlong)(updatedCells->diseaseIdx).end - (longlong)puVar2))) {
+      if (bVar1 == diseaseIdxToAdd) {
+        iVar10 = diseaseCountToAdd + iVar7;
+        bVar8 = bVar1;
+      }
+      else {
+        iVar10 = diseaseCountToAdd;
+        bVar8 = diseaseIdxToAdd;
+        if ((bVar1 != 0xff) && (iVar10 = iVar7, bVar8 = bVar1, diseaseIdxToAdd != 0xff)) {
+          pDVar5 = std::vector<>::operator[](&this->diseases,(ulonglong)bVar1);
+          pDVar6 = std::vector<>::operator[](&this->diseases,(ulonglong)diseaseIdxToAdd);
+          fVar11 = (float)iVar7 * pDVar5->strength;
+          fVar12 = (float)diseaseCountToAdd * pDVar6->strength;
+          if (fVar11 <= fVar12) {
+            if (iVar7 < 0) {
+              iVar10 = -iVar7;
+              bVar8 = diseaseIdxToAdd;
+            }
+          }
+          else {
+            iVar7 = (int)((float)diseaseCountToAdd - (fVar11 / fVar12) * (float)iVar7);
+            if (iVar7 < 0) {
+              diseaseIdxToAdd = bVar1;
+            }
+            iVar10 = -iVar7;
+            bVar8 = diseaseIdxToAdd;
+            if (-1 < iVar7) {
+              iVar10 = iVar7;
+            }
+          }
+        }
+      }
+      puVar2 = (updatedCells->diseaseIdx).data;
+      if (uVar9 < (ulonglong)((longlong)(updatedCells->diseaseIdx).end - (longlong)puVar2)) {
+        puVar2[uVar9] = bVar8;
+        piVar3 = (updatedCells->diseaseCount).data;
+        if (uVar9 < (ulonglong)((longlong)(updatedCells->diseaseCount).end - (longlong)piVar3 >> 2))
+        {
+          piVar3[uVar9] = iVar10;
+          if (0 < iVar10) {
+            if (bVar8 != bVar1) {
+              puVar2 = (updatedCells->diseaseInfestationTickCount).data;
+              if ((ulonglong)
+                  ((longlong)(updatedCells->diseaseInfestationTickCount).end - (longlong)puVar2) <=
+                  uVar9) goto LAB_1800298d2;
+              puVar2[uVar9] = '\0';
+            }
+            return;
+          }
+          puVar2 = (updatedCells->diseaseIdx).data;
+          if (uVar9 < (ulonglong)((longlong)(updatedCells->diseaseIdx).end - (longlong)puVar2)) {
+            puVar2[uVar9] = 0xff;
+            piVar3 = (updatedCells->diseaseCount).data;
+            if (uVar9 < (ulonglong)
+                        ((longlong)(updatedCells->diseaseCount).end - (longlong)piVar3 >> 2)) {
+              piVar3[uVar9] = 0;
+              puVar2 = (updatedCells->diseaseInfestationTickCount).data;
+              if (uVar9 < (ulonglong)
+                          ((longlong)(updatedCells->diseaseInfestationTickCount).end -
+                          (longlong)puVar2)) {
+                puVar2[uVar9] = '\0';
+                pfVar4 = (updatedCells->diseaseGrowthAccumulatedError).data;
+                if (uVar9 < (ulonglong)
+                            ((longlong)(updatedCells->diseaseGrowthAccumulatedError).end -
+                             (longlong)pfVar4 >> 2)) {
+                  pfVar4[uVar9] = 0.0;
+                  return;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+LAB_1800298d2:
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
+
