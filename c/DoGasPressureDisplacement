@@ -1,0 +1,158 @@
+
+float __cdecl
+DoGasPressureDisplacement(ushort param_1,int param_2,int param_3,int param_4,SimData *param_5)
+
+{
+  float fVar1;
+  ushort uVar2;
+  CellSOA *pCVar3;
+  short *psVar4;
+  float *pfVar5;
+  uchar *puVar6;
+  float *pfVar7;
+  int *piVar8;
+  SimData *pSVar9;
+  SimData *simData;
+  ulonglong uVar10;
+  SimData **ppSVar11;
+  ulonglong uVar12;
+  int diseaseCountToAdd;
+  ulonglong cellIndex;
+  ulonglong uVar13;
+  float fVar14;
+  undefined4 local_res18;
+  
+  simData = param_5;
+  cellIndex = (ulonglong)param_3;
+  pCVar3 = (param_5->cells).pointer;
+  uVar12 = (ulonglong)param_4;
+  uVar13 = (ulonglong)param_2;
+  psVar4 = (pCVar3->elementIdx).data;
+  pSVar9 = param_5;
+  if (cellIndex < (ulonglong)((longlong)(pCVar3->elementIdx).end - (longlong)psVar4 >> 1)) {
+    uVar2 = psVar4[cellIndex];
+    if ((ulonglong)uVar2 <
+        (ulonglong)((longlong)(gElementPressureData._16_8_ - gElementPressureData._8_8_) >> 3)) {
+      if ((*(byte *)(gElementPressureData._8_8_ + (ulonglong)uVar2 * 8) & 3) != 1) {
+        return 0.0;
+      }
+      pfVar5 = (pCVar3->mass).data;
+      uVar10 = (longlong)(pCVar3->mass).end - (longlong)pfVar5 >> 2;
+      if ((uVar13 < uVar10) && (cellIndex < uVar10)) {
+        fVar1 = pfVar5[uVar13];
+        if (fVar1 < pfVar5[cellIndex] || fVar1 == pfVar5[cellIndex]) {
+          return 0.0;
+        }
+        pCVar3 = (param_5->updatedCells).pointer;
+        psVar4 = (pCVar3->elementIdx).data;
+        uVar10 = (longlong)(pCVar3->elementIdx).end - (longlong)psVar4 >> 1;
+        if (uVar13 < uVar10) {
+          if (psVar4[uVar13] != param_1) {
+            return 0.0;
+          }
+          if (cellIndex < uVar10) {
+            if (psVar4[cellIndex] != uVar2) {
+              return 0.0;
+            }
+            pfVar5 = (pCVar3->mass).data;
+            if (cellIndex < (ulonglong)((longlong)(pCVar3->mass).end - (longlong)pfVar5 >> 2)) {
+              if (pfVar5[cellIndex] <= 0.0) {
+                return 0.0;
+              }
+              if (uVar12 < uVar10) {
+                if (psVar4[uVar12] != uVar2) {
+                  if (uVar10 <= uVar12) goto LAB_180046aed;
+                  if (psVar4[uVar12] != param_5->vacuumElementIdx) {
+                    return 0.0;
+                  }
+                }
+                puVar6 = (pCVar3->properties).data;
+                if (uVar12 < (ulonglong)((longlong)(pCVar3->properties).end - (longlong)puVar6)) {
+                  if ((puVar6[uVar12] & 1) != 0) {
+                    return 0.0;
+                  }
+                  DoDisplacement(param_5,(SimEvents *)param_5->simEvents,pCVar3,param_3,param_4);
+                  pCVar3 = (simData->updatedCells).pointer;
+                  pfVar5 = (pCVar3->mass).data;
+                  uVar12 = (longlong)(pCVar3->mass).end - (longlong)pfVar5 >> 2;
+                  pSVar9 = param_5;
+                  if (uVar13 < uVar12) {
+                    fVar14 = pfVar5[uVar13];
+                    if (fVar1 * 0.125 <= pfVar5[uVar13]) {
+                      fVar14 = fVar1 * 0.125;
+                    }
+                    if (cellIndex < uVar12) {
+                      pfVar5[cellIndex] = fVar14 + pfVar5[cellIndex];
+                      pCVar3 = (simData->cells).pointer;
+                      pfVar5 = (pCVar3->temperature).data;
+                      if ((uVar13 < (ulonglong)
+                                    ((longlong)(pCVar3->temperature).end - (longlong)pfVar5 >> 2))
+                         && (pCVar3 = (simData->updatedCells).pointer,
+                            pfVar7 = (pCVar3->temperature).data,
+                            cellIndex <
+                            (ulonglong)((longlong)(pCVar3->temperature).end - (longlong)pfVar7 >> 2)
+                            )) {
+                        pfVar7[cellIndex] = pfVar5[uVar13];
+                        pCVar3 = (simData->updatedCells).pointer;
+                        psVar4 = (pCVar3->elementIdx).data;
+                        if (cellIndex <
+                            (ulonglong)((longlong)(pCVar3->elementIdx).end - (longlong)psVar4 >> 1))
+                        {
+                          psVar4[cellIndex] = param_1;
+                          SimEvents::ChangeSubstance
+                                    ((SimEvents *)simData->simEvents,simData,cellIndex);
+                          pCVar3 = (simData->updatedCells).pointer;
+                          pfVar5 = (pCVar3->mass).data;
+                          uVar12 = (longlong)(pCVar3->mass).end - (longlong)pfVar5 >> 2;
+                          pSVar9 = param_5;
+                          if (uVar13 < uVar12) {
+                            param_5._0_4_ = pfVar5[uVar13] - fVar14;
+                            local_res18 = 0;
+                            ppSVar11 = (SimData **)&local_res18;
+                            if (0.0 < param_5._0_4_) {
+                              ppSVar11 = &param_5;
+                            }
+                            pSVar9 = (SimData *)CONCAT44(param_5._4_4_,param_5._0_4_);
+                            if (uVar13 < uVar12) {
+                              pfVar5[uVar13] = *(float *)ppSVar11;
+                              pCVar3 = (simData->cells).pointer;
+                              piVar8 = (pCVar3->diseaseCount).data;
+                              pSVar9 = (SimData *)CONCAT44(param_5._4_4_,param_5._0_4_);
+                              if (uVar13 < (ulonglong)
+                                           ((longlong)(pCVar3->diseaseCount).end - (longlong)piVar8
+                                           >> 2)) {
+                                puVar6 = (pCVar3->diseaseIdx).data;
+                                diseaseCountToAdd = (int)((float)piVar8[uVar13] * 0.125);
+                                pSVar9 = (SimData *)CONCAT44(param_5._4_4_,param_5._0_4_);
+                                if (uVar13 < (ulonglong)
+                                             ((longlong)(pCVar3->diseaseIdx).end - (longlong)puVar6)
+                                   ) {
+                                  Disease::AddDiseaseToCell
+                                            ((Disease *)gDisease,(simData->updatedCells).pointer,
+                                             param_3,puVar6[uVar13],diseaseCountToAdd);
+                                  CellSOA::ModifyDiseaseCount
+                                            ((simData->updatedCells).pointer,param_2,
+                                             -diseaseCountToAdd);
+                                  return fVar14;
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+LAB_180046aed:
+  param_5 = pSVar9;
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
+
