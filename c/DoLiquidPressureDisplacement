@@ -1,0 +1,134 @@
+
+float __cdecl
+DoLiquidPressureDisplacement(ushort param_1,int param_2,int param_3,int param_4,SimData *param_5)
+
+{
+  ushort uVar1;
+  CellSOA *pCVar2;
+  uchar *puVar3;
+  CellSOA *pCVar4;
+  short *psVar5;
+  float *pfVar6;
+  float *pfVar7;
+  int *piVar8;
+  SimData *pSVar9;
+  SimData *simData;
+  bool bVar10;
+  ulonglong uVar11;
+  SimData **ppSVar12;
+  int diseaseCountToAdd;
+  ulonglong uVar13;
+  ulonglong uVar14;
+  float fVar15;
+  undefined4 local_res18;
+  
+  simData = param_5;
+  uVar14 = (ulonglong)param_3;
+  pCVar2 = (param_5->updatedCells).pointer;
+  uVar13 = (ulonglong)param_2;
+  puVar3 = (pCVar2->properties).data;
+  pSVar9 = param_5;
+  if (uVar14 < (ulonglong)((longlong)(pCVar2->properties).end - (longlong)puVar3)) {
+    if ((puVar3[uVar14] & 2) == 0) {
+      pCVar4 = (param_5->cells).pointer;
+      psVar5 = (pCVar4->elementIdx).data;
+      if ((ulonglong)((longlong)(pCVar4->elementIdx).end - (longlong)psVar5 >> 1) <= uVar14)
+      goto LAB_1800451cd;
+      uVar1 = psVar5[uVar14];
+      if (param_1 != uVar1) {
+        psVar5 = (pCVar2->elementIdx).data;
+        uVar11 = (longlong)(pCVar2->elementIdx).end - (longlong)psVar5 >> 1;
+        if (uVar11 <= uVar13) goto LAB_1800451cd;
+        if (psVar5[uVar13] == param_1) {
+          if (uVar11 <= uVar14) goto LAB_1800451cd;
+          if (psVar5[uVar14] == uVar1) {
+            if ((ulonglong)
+                ((longlong)(gElementPressureData._16_8_ - gElementPressureData._8_8_) >> 3) <=
+                (ulonglong)uVar1) goto LAB_1800451cd;
+            if ((*(byte *)(gElementPressureData._8_8_ + (ulonglong)uVar1 * 8) & 3) == 2) {
+              pfVar6 = (pCVar4->mass).data;
+              uVar11 = (longlong)(pCVar4->mass).end - (longlong)pfVar6 >> 2;
+              if (((uVar11 <= uVar13) || (uVar11 <= uVar14)) ||
+                 (uVar11 <= (ulonglong)(longlong)param_4)) goto LAB_1800451cd;
+              fVar15 = pfVar6[uVar13];
+              if (pfVar6[param_4] + pfVar6[uVar14] < fVar15) {
+                bVar10 = DisplaceLiquidDirectional
+                                   (param_5,(SimEvents *)param_5->simEvents,param_3,param_4,uVar1);
+                if (bVar10) {
+                  pCVar2 = (simData->updatedCells).pointer;
+                  fVar15 = fVar15 * 0.125;
+                  pfVar6 = (pCVar2->mass).data;
+                  pSVar9 = param_5;
+                  if (uVar14 < (ulonglong)((longlong)(pCVar2->mass).end - (longlong)pfVar6 >> 2)) {
+                    pfVar6[uVar14] = fVar15 + pfVar6[uVar14];
+                    pCVar2 = (simData->cells).pointer;
+                    pfVar6 = (pCVar2->temperature).data;
+                    if ((uVar13 < (ulonglong)
+                                  ((longlong)(pCVar2->temperature).end - (longlong)pfVar6 >> 2)) &&
+                       (pCVar2 = (simData->updatedCells).pointer,
+                       pfVar7 = (pCVar2->temperature).data,
+                       uVar14 < (ulonglong)
+                                ((longlong)(pCVar2->temperature).end - (longlong)pfVar7 >> 2))) {
+                      pfVar7[uVar14] = pfVar6[uVar13];
+                      pCVar2 = (simData->updatedCells).pointer;
+                      psVar5 = (pCVar2->elementIdx).data;
+                      if (uVar14 < (ulonglong)
+                                   ((longlong)(pCVar2->elementIdx).end - (longlong)psVar5 >> 1)) {
+                        psVar5[uVar14] = param_1;
+                        SimEvents::ChangeSubstance((SimEvents *)simData->simEvents,simData,uVar14);
+                        pCVar2 = (simData->updatedCells).pointer;
+                        pfVar6 = (pCVar2->mass).data;
+                        uVar14 = (longlong)(pCVar2->mass).end - (longlong)pfVar6 >> 2;
+                        pSVar9 = param_5;
+                        if (uVar13 < uVar14) {
+                          param_5._0_4_ = pfVar6[uVar13] - fVar15;
+                          local_res18 = 0;
+                          ppSVar12 = (SimData **)&local_res18;
+                          if (0.0 < param_5._0_4_) {
+                            ppSVar12 = &param_5;
+                          }
+                          pSVar9 = (SimData *)CONCAT44(param_5._4_4_,param_5._0_4_);
+                          if (uVar13 < uVar14) {
+                            pfVar6[uVar13] = *(float *)ppSVar12;
+                            pCVar2 = (simData->cells).pointer;
+                            piVar8 = (pCVar2->diseaseCount).data;
+                            pSVar9 = (SimData *)CONCAT44(param_5._4_4_,param_5._0_4_);
+                            if (uVar13 < (ulonglong)
+                                         ((longlong)(pCVar2->diseaseCount).end - (longlong)piVar8 >>
+                                         2)) {
+                              puVar3 = (pCVar2->diseaseIdx).data;
+                              diseaseCountToAdd = (int)((float)piVar8[uVar13] * 0.125);
+                              pSVar9 = (SimData *)CONCAT44(param_5._4_4_,param_5._0_4_);
+                              if (uVar13 < (ulonglong)
+                                           ((longlong)(pCVar2->diseaseIdx).end - (longlong)puVar3))
+                              {
+                                Disease::AddDiseaseToCell
+                                          ((Disease *)gDisease,(simData->updatedCells).pointer,
+                                           param_3,puVar3[uVar13],diseaseCountToAdd);
+                                CellSOA::ModifyDiseaseCount
+                                          ((simData->updatedCells).pointer,param_2,
+                                           -diseaseCountToAdd);
+                                return fVar15;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  goto LAB_1800451cd;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return 0.0;
+  }
+LAB_1800451cd:
+  param_5 = pSVar9;
+                    /* WARNING: Subroutine does not return */
+  _invalid_parameter_noinfo_noreturn();
+}
+
